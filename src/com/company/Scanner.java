@@ -51,10 +51,8 @@ class Scanner {
             return;
         }
 
-        // The closing ".
         advance();
 
-        // Trim the surrounding quotes.
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.STRING, value);
     }
