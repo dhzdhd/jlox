@@ -1,4 +1,4 @@
-package com.company;
+package me.dhzdhd;
 
 public enum TokenType {
     // Single-character tokens.

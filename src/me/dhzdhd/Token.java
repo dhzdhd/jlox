@@ -1,4 +1,4 @@
-package com.company;
+package me.dhzdhd;
 
 record Token(TokenType type, String lexeme, Object literal, int line) {
 

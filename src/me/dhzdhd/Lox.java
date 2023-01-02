@@ -1,4 +1,4 @@
-package com.company;
+package me.dhzdhd;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class Lox {
         }
     }
 
-    static void error(int line, String message) {
+    static void error(int line, String message) { // Ideally an ErrorInterface
         report(line, "", message);
     }
 
@@ -45,25 +45,18 @@ public class Lox {
         BufferedReader reader = new BufferedReader(input);
 
         while (true) {
-            System.out.println("> ");
+            System.out.print("> ");
             String line = reader.readLine();
 
-            if (line == null) break;
+            if (line == null) break; // On Ctrl + D
             run(line);
 
-            hadError = false;
+            hadError = false; // Reset error cuz REPL
         }
     }
 
-    private static void runFile(final String path) {
-        byte[] bytes = new byte[0];
-        try {
-            bytes = Files.readAllBytes(Paths.get(path));
-        } catch (IOException err) {
-            System.out.println("File not found!");
-            System.exit(64);
-        }
-
+    private static void runFile(final String path) throws IOException {
+        byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
 
         if (hadError) {

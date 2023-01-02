@@ -1,4 +1,4 @@
-package com.company;
+package me.dhzdhd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
-    private int start = 0;
-    private int current = 0;
+    private int start = 0; // First char of the lexeme
+    private int current = 0; // Char currently being considered of lexeme
     private int line = 1;
 
     Scanner(String source) {
@@ -57,6 +57,25 @@ class Scanner {
         addToken(TokenType.STRING, value);
     }
 
+    private char peekNext() {
+        if (current + 1 >= source.length()) return '\0';
+        return source.charAt(current + 1);
+    }
+
+    private void number() {
+        while (isDigit(peek())) {
+            advance();
+        }
+
+        if (peek() == '.' && isDigit(peekNext())) {
+            advance();
+
+            while (isDigit(peek())) advance();
+        }
+
+        addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+    }
+
     private void doNothing() {}
 
     private void scanToken() {
@@ -86,8 +105,18 @@ class Scanner {
             case '"' -> string();
             case ' ', '\r', '\t' -> doNothing();
             case '\n' -> line++;
-            default -> Lox.error(line, "Unexpected char");
+            default -> {
+                if (isDigit(c)) {
+                    number();
+                } else {
+                    Lox.error(line, "Unexpected char");
+                }
+            }
         }
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 
     private boolean isAtEnd() {
