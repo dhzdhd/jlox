@@ -1,7 +1,9 @@
 package me.dhzdhd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Scanner {
     private final String source;
@@ -9,9 +11,30 @@ class Scanner {
     private int start = 0; // First char of the lexeme
     private int current = 0; // Char currently being considered of lexeme
     private int line = 1;
+    private static final Map<String, TokenType> keywords;
 
     Scanner(String source) {
         this.source = source;
+    }
+
+    static {
+        keywords = new HashMap<>();
+        keywords.put("and", TokenType.AND);
+        keywords.put("class", TokenType.CLASS);
+        keywords.put("else", TokenType.ELSE);
+        keywords.put("false", TokenType.FALSE);
+        keywords.put("for", TokenType.FOR);
+        keywords.put("fun", TokenType.FUN);
+        keywords.put("if", TokenType.IF);
+        keywords.put("nil", TokenType.NIL);
+        keywords.put("or", TokenType.OR);
+        keywords.put("print", TokenType.PRINT);
+        keywords.put("return", TokenType.RETURN);
+        keywords.put("super", TokenType.SUPER);
+        keywords.put("this", TokenType.THIS);
+        keywords.put("true", TokenType.TRUE);
+        keywords.put("var", TokenType.VAR);
+        keywords.put("while", TokenType.WHILE);
     }
 
     private char advance() {
@@ -76,6 +99,18 @@ class Scanner {
         addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
+    private void identifier() {
+        while (isAlphaNumeric(peek())) advance();
+
+        String text = source.substring(start, current);
+        TokenType type = keywords.get(text);
+
+        if (type == null) {
+            type = TokenType.IDENTIFIER;
+        }
+        addToken(type);
+    }
+
     private void doNothing() {}
 
     private void scanToken() {
@@ -108,11 +143,21 @@ class Scanner {
             default -> {
                 if (isDigit(c)) {
                     number();
+                } else if (isAlpha(c)) {
+                    identifier();
                 } else {
                     Lox.error(line, "Unexpected char");
                 }
             }
         }
+    }
+
+    private boolean isAlphaNumeric(char c) {
+        return isAlpha(c) || isDigit(c);
+    }
+
+    private boolean isAlpha(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')|| c == '_';
     }
 
     private boolean isDigit(char c) {
