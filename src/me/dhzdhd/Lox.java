@@ -30,7 +30,7 @@ public class Lox {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         hadError = true;
     }
-    
+
     private static void run(final String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();

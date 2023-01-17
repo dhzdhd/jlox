@@ -9,7 +9,7 @@ class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
     private int start = 0; // First char of the lexeme
-    private int current = 0; // Char currently being considered of lexeme
+    private int current = 0; // Char currently being considered in the lexeme
     private int line = 1;
     private static final Map<String, TokenType> keywords;
 
